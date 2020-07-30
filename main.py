@@ -20,6 +20,7 @@
 
 import cec
 import pyautogui
+import time
 
 
 class CecController:
@@ -65,6 +66,9 @@ class CecController:
         if key == 13:
             # return
             pyautogui.press('escape')
+        if key == 114:
+            # red key
+            pyautogui.moveTo(10, 10)
         if key == 75:
             # ch+
             self.mouseSensibility += 10
@@ -168,9 +172,10 @@ class CecController:
 
     def run(self):
         while True:
-            command = input('Enter q to quit: ').lower()
-            if command == 'q' or command == 'quit':
-                return
+            time.sleep(500)
+            # command = input('Enter q to quit: ').lower()
+            # if command == 'q' or command == 'quit':
+            #    return
 
 
 if __name__ == '__main__':

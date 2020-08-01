@@ -1,6 +1,9 @@
+# Script to control my raspi via TV remote control
+# by Matthias Barde
+#
 # based on:
 # https://www.raspberry-pi-geek.de/ausgaben/rpg/2018/12/per-cec-software-auf-dem-raspi-steuern
-# from Bernhard Bablok
+# by Bernhard Bablok
 #
 # libCEC(R) is Copyright (C) 2011-2015 Pulse-Eight Limited.  All rights reserved.
 # libCEC(R) is a original work, containing original code.
@@ -8,10 +11,11 @@
 # License: GPL2 (original libcec-license)
 #
 # License: GPL3
-#
 
 import cec
+import os.path
 import pyautogui
+import subprocess
 import time
 
 
@@ -26,7 +30,7 @@ class CecController:
         self.cecconfig.clientVersion = cec.LIBCEC_VERSION_CURRENT
 
         self.cecconfig.SetLogCallback(self.process_logmessage)
-        self.cecconfig.SetKeyPressCallback(self.process_key)
+        # self.cecconfig.SetKeyPressCallback(self.process_key)
         self.cecconfig.SetCommandCallback(self.process_command)
 
         self.controller = cec.ICECAdapter.Create(self.cecconfig)
@@ -47,9 +51,6 @@ class CecController:
 
     def process_key(self, key, duration):
         print('Remotecontrol key: ' + str(key))
-        if key == 114:
-            # red key
-            pyautogui.moveTo(10, 10)
         return 0
 
     def process_command(self, cmd):
@@ -94,16 +95,16 @@ class CecController:
             pyautogui.scroll(200)
         if cmd == '>> 03:44:72':
             # btn down: F2 (red):
-            pass
+            self.run_desktop_icon('red.desktop')
         if cmd == '>> 03:44:73':
             # btn down: F3 (green):
-            pass
+            self.run_desktop_icon('green.desktop')
         if cmd == '>> 03:44:74':
             # btn down: F4 (yellow):
-            pass
+            self.run_desktop_icon('yellow.desktop')
         if cmd == '>> 03:44:71':
             # btn down: F1 (blue):
-            pass
+            self.run_desktop_icon('blue.desktop')
         if cmd == '>> 03:44:22':
             # btn down: 2
             pyautogui.press('up')
@@ -125,6 +126,21 @@ class CecController:
             pyautogui.press('down')
             pass
         return 0
+
+    def run_desktop_icon(self, filename):
+        desktopDir = '/home/pi/Desktop/'
+        filename = desktopDir + filename
+        if not os.path.isfile(filename):
+            return
+        f = open(filename)
+        lines = f.readlines()
+        f.close()
+        execCmdArgs = []
+        for line in lines:
+            if line.startswith('Exec='):
+                execCmdArgs = line[5:].split(' ')
+        if len(execCmdArgs) > 0:
+            subprocess.Popen(execCmdArgs)
 
     def process_logmessage(self, level, time, message):
         if level > self.log_level:

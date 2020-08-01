@@ -60,24 +60,24 @@ class CecController:
             # vendor button down [SELECT]
             pyautogui.click()
         if cmd == '>> 03:44:01':
-            # btn down: UP
+            # key down: UP
             pyautogui.moveRel(0, -self.mouseSensibility, duration=0)
         if cmd == '>> 03:44:02':
-            # btn down: DOWN
+            # key down: DOWN
             pyautogui.moveRel(0, self.mouseSensibility, duration=0)
         if cmd == '>> 03:44:03':
-            # btn down: LEFT
+            # key down: LEFT
             pyautogui.moveRel(-self.mouseSensibility, 0, duration=0)
         if cmd == '>> 03:44:04':
-            # btn down: RIGHT
+            # key down: RIGHT
             pyautogui.moveRel(self.mouseSensibility, 0, duration=0)
         if cmd == '>> 03:44:4b':
-            # btn down: FORWARD
+            # key down: FORWARD
             self.mouseSensibility += 10
             if self.mouseSensibility >= 1000:
                 self.mouseSensibility = 1000
         if cmd == '>> 03:44:4c':
-            # btn down: BACKWARD
+            # key down: BACKWARD
             if self.mouseSensibility > 10:
                 self.mouseSensibility -= 10
             else:
@@ -85,44 +85,44 @@ class CecController:
             if self.mouseSensibility < 1:
                 self.mouseSensibility = 1
         if cmd == '>> 03:44:0d':
-            # btn down: EXIT
+            # key down: EXIT
             pyautogui.press('escape')
         if cmd == '>> 03:44:48':
-            # btn down: REWIND
+            # key down: REWIND
             pyautogui.scroll(-200)
         if cmd == '>> 03:44:49':
-            # btn down: FAST FORWARD
+            # key down: FAST FORWARD
             pyautogui.scroll(200)
         if cmd == '>> 03:44:72':
-            # btn down: F2 (red):
+            # key down: F2 (red):
             self.run_desktop_icon('red.desktop')
         if cmd == '>> 03:44:73':
-            # btn down: F3 (green):
+            # key down: F3 (green):
             self.run_desktop_icon('green.desktop')
         if cmd == '>> 03:44:74':
-            # btn down: F4 (yellow):
+            # key down: F4 (yellow):
             self.run_desktop_icon('yellow.desktop')
         if cmd == '>> 03:44:71':
-            # btn down: F1 (blue):
+            # key down: F1 (blue):
             self.run_desktop_icon('blue.desktop')
         if cmd == '>> 03:44:22':
-            # btn down: 2
+            # key down: 2
             pyautogui.press('up')
             pass
         if cmd == '>> 03:44:24':
-            # btn down: 4
+            # key down: 4
             pyautogui.press('left')
             pass
         if cmd == '>> 03:44:25':
-            # btn down: 5
+            # key down: 5
             pyautogui.press('enter')
             pass
         if cmd == '>> 03:44:26':
-            # btn down: 6
+            # key down: 6
             pyautogui.press('right')
             pass
         if cmd == '>> 03:44:28':
-            # btn down: 8
+            # key down: 8
             pyautogui.press('down')
             pass
         return 0

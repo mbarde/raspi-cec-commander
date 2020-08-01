@@ -57,7 +57,7 @@ class CecController:
         # decode commans: https://www.cec-o-matic.com/
         print('Command: ' + cmd)
         if cmd == '>> 03:44:00':
-            # vendor button down [SELECT]
+            # key down: SELECT
             pyautogui.click()
         if cmd == '>> 03:44:01':
             # key down: UP

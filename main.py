@@ -47,29 +47,9 @@ class CecController:
 
     def process_key(self, key, duration):
         print('Remotecontrol key: ' + str(key))
-        if key == 13:
-            # return
-            pyautogui.press('escape')
         if key == 114:
             # red key
             pyautogui.moveTo(10, 10)
-        if key == 75:
-            # ch+
-            self.mouseSensibility += 10
-        if key == 76:
-            # ch-
-            if self.mouseSensibility > 10:
-                self.mouseSensibility -= 10
-            else:
-                self.mouseSensibility -= 1
-            if self.mouseSensibility < 1:
-                self.mouseSensibility = 1
-        if key == 72:
-            # <<
-            pyautogui.scroll(-200)
-        if key == 73:
-            # >>
-            pyautogui.scroll(200)
         return 0
 
     def process_command(self, cmd):
@@ -90,6 +70,60 @@ class CecController:
         if cmd == '>> 03:44:04':
             # btn down: RIGHT
             pyautogui.moveRel(self.mouseSensibility, 0, duration=0)
+        if cmd == '>> 03:44:4b':
+            # btn down: FORWARD
+            self.mouseSensibility += 10
+            if self.mouseSensibility >= 1000:
+                self.mouseSensibility = 1000
+        if cmd == '>> 03:44:4c':
+            # btn down: BACKWARD
+            if self.mouseSensibility > 10:
+                self.mouseSensibility -= 10
+            else:
+                self.mouseSensibility -= 1
+            if self.mouseSensibility < 1:
+                self.mouseSensibility = 1
+        if cmd == '>> 03:44:0d':
+            # btn down: EXIT
+            pyautogui.press('escape')
+        if cmd == '>> 03:44:48':
+            # btn down: REWIND
+            pyautogui.scroll(-200)
+        if cmd == '>> 03:44:49':
+            # btn down: FAST FORWARD
+            pyautogui.scroll(200)
+        if cmd == '>> 03:44:72':
+            # btn down: F2 (red):
+            pass
+        if cmd == '>> 03:44:73':
+            # btn down: F3 (green):
+            pass
+        if cmd == '>> 03:44:74':
+            # btn down: F4 (yellow):
+            pass
+        if cmd == '>> 03:44:71':
+            # btn down: F1 (blue):
+            pass
+        if cmd == '>> 03:44:22':
+            # btn down: 2
+            pyautogui.press('up')
+            pass
+        if cmd == '>> 03:44:24':
+            # btn down: 4
+            pyautogui.press('left')
+            pass
+        if cmd == '>> 03:44:25':
+            # btn down: 5
+            pyautogui.press('enter')
+            pass
+        if cmd == '>> 03:44:26':
+            # btn down: 6
+            pyautogui.press('right')
+            pass
+        if cmd == '>> 03:44:28':
+            # btn down: 8
+            pyautogui.press('down')
+            pass
         return 0
 
     def process_logmessage(self, level, time, message):

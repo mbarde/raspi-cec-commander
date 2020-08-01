@@ -1,22 +1,14 @@
-# from:
-# https://www.raspberry-pi-geek.de/ausgaben/rpg/2018/12/per-cec-software-auf-dem-raspi-steuern/2/
-# -----------------------------------------------------------------------------
-# CEC test-programm. Interactive 'shell' to test various CEC-functions.
-#
-# Part of this code is copied from the libcec-source taken from
-# libcec/src/pyCecClient/pyCecClient.py
+# based on:
+# https://www.raspberry-pi-geek.de/ausgaben/rpg/2018/12/per-cec-software-auf-dem-raspi-steuern
+# from Bernhard Bablok
 #
 # libCEC(R) is Copyright (C) 2011-2015 Pulse-Eight Limited.  All rights reserved.
 # libCEC(R) is a original work, containing original code.
 # libCEC(R) is a trademark of Pulse-Eight Limited.
 # License: GPL2 (original libcec-license)
 #
-# Author: Bernhard Bablok
 # License: GPL3
 #
-# Website: https://github.com/bablokb/simple-radio
-#
-# -----------------------------------------------------------------------------
 
 import cec
 import pyautogui
@@ -55,14 +47,6 @@ class CecController:
 
     def process_key(self, key, duration):
         print('Remotecontrol key: ' + str(key))
-        if key == 1:
-            pyautogui.moveRel(0, -self.mouseSensibility, duration=0)
-        if key == 2:
-            pyautogui.moveRel(0, self.mouseSensibility, duration=0)
-        if key == 3:
-            pyautogui.moveRel(-self.mouseSensibility, 0, duration=0)
-        if key == 4:
-            pyautogui.moveRel(self.mouseSensibility, 0, duration=0)
         if key == 13:
             # return
             pyautogui.press('escape')
@@ -86,8 +70,6 @@ class CecController:
         if key == 73:
             # >>
             pyautogui.scroll(200)
-        # if key >= 33 and key <= 41:
-        # number block
         return 0
 
     def process_command(self, cmd):
@@ -96,6 +78,18 @@ class CecController:
         if cmd == '>> 03:44:00':
             # vendor button down [SELECT]
             pyautogui.click()
+        if cmd == '>> 03:44:01':
+            # btn down: UP
+            pyautogui.moveRel(0, -self.mouseSensibility, duration=0)
+        if cmd == '>> 03:44:02':
+            # btn down: DOWN
+            pyautogui.moveRel(0, self.mouseSensibility, duration=0)
+        if cmd == '>> 03:44:03':
+            # btn down: LEFT
+            pyautogui.moveRel(-self.mouseSensibility, 0, duration=0)
+        if cmd == '>> 03:44:04':
+            # btn down: RIGHT
+            pyautogui.moveRel(self.mouseSensibility, 0, duration=0)
         return 0
 
     def process_logmessage(self, level, time, message):

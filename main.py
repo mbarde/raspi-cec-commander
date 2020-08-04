@@ -22,7 +22,7 @@ import time
 class CecController:
 
     def __init__(self):
-        self.APP_NAME = 'matzes-raspi-player'
+        self.APP_NAME = 'raspi-player'
 
         self.log_level = cec.CEC_LOG_WARNING
         self.cecconfig = cec.libcec_configuration()

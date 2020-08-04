@@ -22,9 +22,11 @@ import time
 class CecController:
 
     def __init__(self):
+        self.APP_NAME = 'matzes-raspi-player'
+
         self.log_level = cec.CEC_LOG_WARNING
         self.cecconfig = cec.libcec_configuration()
-        self.cecconfig.strDeviceName = 'raspi-player'
+        self.cecconfig.strDeviceName = self.APP_NAME
         self.cecconfig.bActivateSource = 0
         self.cecconfig.deviceTypes.Add(cec.CEC_DEVICE_TYPE_TUNER)
         self.cecconfig.clientVersion = cec.LIBCEC_VERSION_CURRENT
@@ -56,76 +58,90 @@ class CecController:
     def process_command(self, cmd):
         # decode commans: https://www.cec-o-matic.com/
         print('Command: ' + cmd)
-        if cmd == '>> 03:44:00':
-            # key down: SELECT
+        cmd = cmd[3:]  # remove prefix `>> `
+        parts = cmd.split(':')
+        if parts[0] == '03' and parts[1] == '44':
+            self.command_key_down(parts[2])
+
+    def command_key_down(self, key):
+        if key == '00':
+            # SELECT
             pyautogui.click()
-        if cmd == '>> 03:44:01':
-            # key down: UP
+        if key == '01':
+            # UP
             pyautogui.moveRel(0, -self.mouseSensibility, duration=0)
-        if cmd == '>> 03:44:02':
-            # key down: DOWN
+        if key == '02':
+            # DOWN
             pyautogui.moveRel(0, self.mouseSensibility, duration=0)
-        if cmd == '>> 03:44:03':
-            # key down: LEFT
+        if key == '03':
+            # LEFT
             pyautogui.moveRel(-self.mouseSensibility, 0, duration=0)
-        if cmd == '>> 03:44:04':
-            # key down: RIGHT
+        if key == '04':
+            # RIGHT
             pyautogui.moveRel(self.mouseSensibility, 0, duration=0)
-        if cmd == '>> 03:44:4b':
-            # key down: FORWARD
-            self.mouseSensibility += 10
-            if self.mouseSensibility >= 1000:
-                self.mouseSensibility = 1000
-        if cmd == '>> 03:44:4c':
-            # key down: BACKWARD
-            if self.mouseSensibility > 10:
-                self.mouseSensibility -= 10
-            else:
-                self.mouseSensibility -= 1
-            if self.mouseSensibility < 1:
-                self.mouseSensibility = 1
-        if cmd == '>> 03:44:0d':
-            # key down: EXIT
+        if key == '4b':
+            # FORWARD
+            self.increase_mouse_sensibility()
+        if key == '4c':
+            # BACKWARD
+            self.decrease_mouse_sensibility()
+        if key == '0d':
+            # EXIT
             pyautogui.press('escape')
-        if cmd == '>> 03:44:48':
-            # key down: REWIND
+        if key == '48':
+            # REWIND
             pyautogui.scroll(200)
-        if cmd == '>> 03:44:49':
-            # key down: FAST FORWARD
+        if key == '49':
+            # FAST FORWARD
             pyautogui.scroll(-200)
-        if cmd == '>> 03:44:72':
-            # key down: F2 (red):
+        if key == '72':
+            # F2 (red):
             self.run_desktop_icon('red.desktop')
-        if cmd == '>> 03:44:73':
-            # key down: F3 (green):
+        if key == '73':
+            # F3 (green):
             self.run_desktop_icon('green.desktop')
-        if cmd == '>> 03:44:74':
-            # key down: F4 (yellow):
+        if key == '74':
+            # F4 (yellow):
             self.run_desktop_icon('yellow.desktop')
-        if cmd == '>> 03:44:71':
-            # key down: F1 (blue):
+        if key == '71':
+            # F1 (blue):
             self.run_desktop_icon('blue.desktop')
-        if cmd == '>> 03:44:22':
-            # key down: 2
+        if key == '22':
+            # 2
             pyautogui.press('up')
             pass
-        if cmd == '>> 03:44:24':
-            # key down: 4
+        if key == '24':
+            # 4
             pyautogui.press('left')
             pass
-        if cmd == '>> 03:44:25':
-            # key down: 5
+        if key == '25':
+            # 5
             pyautogui.press('enter')
             pass
-        if cmd == '>> 03:44:26':
-            # key down: 6
+        if key == '26':
+            # 6
             pyautogui.press('right')
             pass
-        if cmd == '>> 03:44:28':
-            # key down: 8
+        if key == '28':
+            # 8
             pyautogui.press('down')
             pass
         return 0
+
+    def increase_mouse_sensibility(self):
+        self.mouseSensibility += 10
+        if self.mouseSensibility >= 1000:
+            self.mouseSensibility = 1000
+        self.send_message('Mouse sensibility is ' + str(self.mouseSensibility))
+
+    def decrease_mouse_sensibility(self):
+        if self.mouseSensibility > 10:
+            self.mouseSensibility -= 10
+        else:
+            self.mouseSensibility -= 1
+        if self.mouseSensibility < 1:
+            self.mouseSensibility = 1
+        self.send_message('Mouse sensibility is ' + str(self.mouseSensibility))
 
     def run_desktop_icon(self, filename):
         desktopDir = '/home/pi/Desktop/'
@@ -144,6 +160,10 @@ class CecController:
         if len(execCmdArgs) > 0:
             subprocess.Popen(execCmdArgs)
             self.send_message('Executing ' + execCmd + ' ...')
+
+    def send_message(self, message):
+        subprocess.Popen(['notify-send', self.APP_NAME, message])
+        return
 
     def process_logmessage(self, level, time, message):
         if level > self.log_level:
@@ -216,10 +236,6 @@ class CecController:
                 strLog += 'Power Status:  ' + self.controller.PowerStatusToString(power) + '\n\n\n'
             x += 1
         print(strLog)
-
-    def send_message(message):
-        subprocess.Popen(['notify-send', message])
-        return
 
     def run(self):
         while True:

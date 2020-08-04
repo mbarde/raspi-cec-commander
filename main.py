@@ -89,10 +89,10 @@ class CecController:
             pyautogui.press('escape')
         if cmd == '>> 03:44:48':
             # key down: REWIND
-            pyautogui.scroll(-200)
+            pyautogui.scroll(200)
         if cmd == '>> 03:44:49':
             # key down: FAST FORWARD
-            pyautogui.scroll(200)
+            pyautogui.scroll(-200)
         if cmd == '>> 03:44:72':
             # key down: F2 (red):
             self.run_desktop_icon('red.desktop')
@@ -135,12 +135,15 @@ class CecController:
         f = open(filename)
         lines = f.readlines()
         f.close()
+        execCmd = ''
         execCmdArgs = []
         for line in lines:
             if line.startswith('Exec='):
-                execCmdArgs = line[5:].split(' ')
+                execCmd = line[5:]
+                execCmdArgs = execCmd.split(' ')
         if len(execCmdArgs) > 0:
             subprocess.Popen(execCmdArgs)
+            self.send_message('Executing ' + execCmd + ' ...')
 
     def process_logmessage(self, level, time, message):
         if level > self.log_level:
@@ -213,6 +216,10 @@ class CecController:
                 strLog += 'Power Status:  ' + self.controller.PowerStatusToString(power) + '\n\n\n'
             x += 1
         print(strLog)
+
+    def send_message(message):
+        subprocess.Popen(['notify-send', message])
+        return
 
     def run(self):
         while True:

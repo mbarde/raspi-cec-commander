@@ -11,6 +11,7 @@
 # License: GPL2 (original libcec-license)
 #
 # License: GPL3
+import tkinter as tk
 
 import cec
 import os.path
@@ -132,7 +133,9 @@ class CecController:
         self.mouseSensibility += 10
         if self.mouseSensibility >= 1000:
             self.mouseSensibility = 1000
-        self.send_message('Mouse sensibility is ' + str(self.mouseSensibility))
+        self.display_msgbox(
+            'Mouse sensibility is ' + str(self.mouseSensibility),
+            duration=1000)
 
     def decrease_mouse_sensibility(self):
         if self.mouseSensibility > 10:
@@ -141,7 +144,9 @@ class CecController:
             self.mouseSensibility -= 1
         if self.mouseSensibility < 1:
             self.mouseSensibility = 1
-        self.send_message('Mouse sensibility is ' + str(self.mouseSensibility))
+        self.display_msgbox(
+            'Mouse sensibility is ' + str(self.mouseSensibility),
+            duration=1000)
 
     def run_desktop_icon(self, filename):
         desktopDir = '/home/pi/Desktop/'
@@ -159,11 +164,16 @@ class CecController:
                 execCmdArgs = execCmd.split(' ')
         if len(execCmdArgs) > 0:
             subprocess.Popen(execCmdArgs)
-            self.send_message('Executing ' + execCmd + ' ...')
+            self.display_msgbox('Executing ' + execCmd + ' ...')
 
-    def send_message(self, message):
-        subprocess.Popen(['notify-send', self.APP_NAME, message])
-        return
+    def display_msgbox(self, msg, font_size=30, duration=3000):
+        root = tk.Tk()
+        root.wm_overrideredirect(True)
+        root.bind('<Button-1>', lambda evt: root.destroy())
+        label = tk.Label(text=msg, font=('Helvetica', font_size))
+        label.pack(expand=False)
+        root.after(duration, lambda: root.destroy())
+        root.mainloop()
 
     def process_logmessage(self, level, time, message):
         if level > self.log_level:

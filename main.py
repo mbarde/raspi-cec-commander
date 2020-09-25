@@ -164,7 +164,9 @@ class CecController:
                 execCmdArgs = execCmd.split(' ')
         if len(execCmdArgs) > 0:
             subprocess.Popen(execCmdArgs)
-            self.display_msgbox('Executing ' + execCmd + ' ...')
+            self.display_msgbox(
+                'Executing ' + execCmd + ' ...',
+                font_size=20)
 
     def display_msgbox(self, msg, font_size=30, duration=3000):
         root = tk.Tk()

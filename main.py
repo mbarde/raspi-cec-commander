@@ -95,10 +95,10 @@ class CecController:
             pyautogui.press('escape')
         if key == '48':
             # REWIND
-            pyautogui.scroll(200)
+            pyautogui.scroll(10)
         if key == '49':
             # FAST FORWARD
-            pyautogui.scroll(-200)
+            pyautogui.scroll(-10)
         if key == '72':
             # F2 (red):
             self.run_desktop_icon('red.desktop')

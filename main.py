@@ -50,7 +50,11 @@ class CecController:
         if not self.controller.Open(self.com_port):
             raise EnvironmentError((2, 'could not open CEC-adapter'))
 
-        self.mouseSensibility = 20
+        self.mouseSensibilitySteps = [
+            10, 40, 100, 200,
+        ]
+        self.mouseSensibilityCurStepId = 0
+        self.mouseSensibility = self.mouseSensibilitySteps[self.mouseSensibilityCurStepId]
 
     def process_key(self, key, duration):
         print('Remotecontrol key: ' + str(key))
@@ -130,17 +134,14 @@ class CecController:
         return 0
 
     def increase_mouse_sensibility(self):
-        self.mouseSensibility += 10
-        if self.mouseSensibility >= 1000:
-            self.mouseSensibility = 1000
+        if self.mouseSensibilityCurStepId < len(self.mouseSensibilitySteps) - 1:
+            self.mouseSensibilityCurStepId += 1
+            self.mouseSensibility = self.mouseSensibilitySteps[self.mouseSensibilityCurStepId]
 
     def decrease_mouse_sensibility(self):
-        if self.mouseSensibility > 10:
-            self.mouseSensibility -= 10
-        else:
-            self.mouseSensibility -= 1
-        if self.mouseSensibility < 1:
-            self.mouseSensibility = 1
+        if self.mouseSensibilityCurStepId > 0:
+            self.mouseSensibilityCurStepId -= 1
+            self.mouseSensibility = self.mouseSensibilitySteps[self.mouseSensibilityCurStepId]
 
     def run_desktop_icon(self, filename):
         desktopDir = '/home/pi/Desktop/'

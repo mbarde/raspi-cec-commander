@@ -133,9 +133,6 @@ class CecController:
         self.mouseSensibility += 10
         if self.mouseSensibility >= 1000:
             self.mouseSensibility = 1000
-        self.display_msgbox(
-            'Mouse sensibility is ' + str(self.mouseSensibility),
-            duration=1000)
 
     def decrease_mouse_sensibility(self):
         if self.mouseSensibility > 10:
@@ -144,9 +141,6 @@ class CecController:
             self.mouseSensibility -= 1
         if self.mouseSensibility < 1:
             self.mouseSensibility = 1
-        self.display_msgbox(
-            'Mouse sensibility is ' + str(self.mouseSensibility),
-            duration=1000)
 
     def run_desktop_icon(self, filename):
         desktopDir = '/home/pi/Desktop/'

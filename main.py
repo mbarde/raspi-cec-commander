@@ -55,6 +55,8 @@ class CecController:
         ]
         self.mouseSensibilityCurStepId = 0
         self.mouseSensibility = self.mouseSensibilitySteps[self.mouseSensibilityCurStepId]
+        self.lastKey = None
+        self.lastKeyTime = -1
 
     def process_key(self, key, duration):
         print('Remotecontrol key: ' + str(key))
@@ -65,10 +67,15 @@ class CecController:
         print('Command: ' + cmd)
         cmd = cmd[3:]  # remove prefix `>> `
         parts = cmd.split(':')
-        if parts[0] == '03' and parts[1] == '44':
-            self.command_key_down(parts[2])
+        if parts[0] == '03':
+            if parts[1] == '44':
+                self.command_key_down(parts[2])
+            if parts[1] == '45':
+                self.command_key_up(parts[2])
 
     def command_key_down(self, key):
+        self.lastKey = key
+        self.lastKeyTime = self.get_time_millis()
         if key == '00':
             # SELECT
             pyautogui.click()
@@ -131,6 +138,16 @@ class CecController:
             # 8
             pyautogui.press('down')
             pass
+        return 0
+
+    def command_key_up(self, key):
+        if key == '0d':
+            # EXIT
+            curMillis = self.get_time_millis()
+            if self.lastKey == '0d' and curMillis - self.lastKeyTime > 1000:
+                # @TODO: close window
+                self.display_msgbox('closing window')
+                pass
         return 0
 
     def increase_mouse_sensibility(self):
@@ -243,6 +260,9 @@ class CecController:
                 strLog += 'Power Status:  ' + self.controller.PowerStatusToString(power) + '\n\n\n'
             x += 1
         print(strLog)
+
+    def get_time_millis(self):
+        return int(round(time.time() * 1000))
 
     def run(self):
         while True:
